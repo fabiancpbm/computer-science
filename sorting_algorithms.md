@@ -27,10 +27,10 @@ Classify the sorting algorithm between recursive or not.
 ## Selection sort
 
 ```java
-public static int[] sort(int[] list) {
+static int[] sort(int[] list) {
     for (int i = 0; i < list.length; i++) {
         int min = Integer.MAX_VALUE;  
-        int index = -1;     
+        int index = -1;   
         for (int j = i + 1; j < list.length; j++) { 
             if (list[j] <= min) {   
                 min = list[j];  
@@ -38,7 +38,7 @@ public static int[] sort(int[] list) {
             }
         }
         list[index] = list[i];  
-        list[i] = min;      
+        list[i] = min;    
     }
     return list;
 }
@@ -66,13 +66,81 @@ $$
 {3an^2\over2}-{3an\over2}+4an
 $$
 
-Removing we remove the contants and highlight the part of the formula with more influence in our time expent, we will find $n^2$. So, in the bigO notation, our function has:
+Removing the constants and highlighting the part of the formula with more influence in our time expent, we will find $n^2$. So, in the bigO notation, our function has:
 
 $$
 BigO(n^2)
 $$
 
 ## Bubble  sort
+
+```java
+static int[] boubleSort(int[] list) {
+    for (int j = 0; j < list.length - 1; j++) {
+        boolean sorted = true;
+        for (int i = 0; i < list.length - 1; i++) {
+            if (list[i] > list[i + 1]) {
+                int temp = list[i];
+                list[i] = list[i + 1];
+                list[i + 1] = temp;
+                sorted = false;
+            }
+        }
+        if (sorted) {
+            break;
+        }
+    }
+    return list;
+}
+```
+
+#### Time complexity
+
+$$
+BigO = 3a(n-1) + (n-1)(B)\\
+B = 5(n-1),\\
+BigO = 3a(n-1)+(n-1)(5a(n-1))\\
+=3an-3a+(n-1)(5an-5a)\\
+=3an-3a+5an^2-5an-5an+5a\\
+=5an^2-7an+2a
+=n^2-n\ =\ n^2\\
+BigO(n^2)
+$$
+
+## Insertion Sort
+
+```java
+static int[] insertionSort(int[] list) {
+    for (int i = 1; i < list.length; i++) {
+        int value = list[i];
+        for (int j = i - 1; j >= 0; j--) {
+            if (value < list[j]) {
+                list[j + 1] = list[j];
+                list[j] = value;
+            } else {
+                break;
+            }
+        }
+    }
+    return list;
+}
+```
+
+#### Time complexity
+
+$$
+BigO = (n-1)a + B\\
+B = 3a(1) + 3a(2) + ... + 3a(n-2)\\
+B = 3a{n-2\over2}(1+n-2)\\
+B = {(3an - 6a)(n-1)\over2}\\
+B = {(3an^2 - 3an - 6an + 6a)\over2}\\
+B = {3an^2 - 9an + 6a\over2}\\
+BigO = (n-1)a + {3an^2 - 9an + 6a\over2}\\
+BigO = na - a + {3an^2 - 9an + 6a\over2}\\
+BigO = {3a\over2}n^2 - {9\over2a}n + 2a + na\\
+BigO = n^2
+$$
+
 
 ## Merge sort
 
