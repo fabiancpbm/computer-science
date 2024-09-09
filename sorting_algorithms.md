@@ -38,7 +38,7 @@ static int[] sort(int[] list) {
             }
         }
         list[index] = list[i];  
-        list[i] = min;    
+        list[i] = min;  
     }
     return list;
 }
@@ -46,30 +46,12 @@ static int[] sort(int[] list) {
 
 #### Time complexity
 
-Considering that each line takes $a$ time to be done, we have, per line:
-
 $$
-l3=a;\ l4=a;\ l6=a;\ l7=a;\ l8=a;\ l11=a;\ l12=a
-$$
-
-But these lines are run different times. The lines $l3,\ l4,\ l11\ and\ l12$ run $n$ times. The lines $l6,\ l7\ and\ l8$ can run together:
-
-$$
-3a(n-1) + 3a(n-2)+3a(n-3)+...+3a(1)\\
-={3an\over2}(n-1)\\
-={3an^2\over2}-{3an\over2}
-$$
-
-The entire function has this time spent formula:
-
-$$
-{3an^2\over2}-{3an\over2}+4an
-$$
-
-Removing the constants and highlighting the part of the formula with more influence in our time expent, we will find $n^2$. So, in the bigO notation, our function has:
-
-$$
-BigO(n^2)
+TimeComplexity.SelectionSort(n) = n((n-1)c'') + nc' + C\\
+= n(nc'' - c'') + nc' + C\\
+= n^2c'' - nc'' + nc' + C\\
+= n^2c'' + n(-c'' + c') + C → n^2 + n + C\\
+TimeComplexity.SelectionSort(n) = BigO(n^2)
 $$
 
 ## Bubble  sort
@@ -97,14 +79,12 @@ static int[] boubleSort(int[] list) {
 #### Time complexity
 
 $$
-BigO = 3a(n-1) + (n-1)(B)\\
-B = 5(n-1),\\
-BigO = 3a(n-1)+(n-1)(5a(n-1))\\
-=3an-3a+(n-1)(5an-5a)\\
-=3an-3a+5an^2-5an-5an+5a\\
-=5an^2-7an+2a
-=n^2-n\ =\ n^2\\
-BigO(n^2)
+TimeComplexity.BubbleSort(n) = (n-1)(c') + (n-1)((n-1)c'')\\
+= nc'- c' + (n-1)(nc''-c'')+C\\
+= n^2c''-nc''-nc''+c''+nc'-c'+C\\
+= n^2c''-2nc''+nc'+c''-c'+C → n^2c''+n(-2c''+c')+C\\
+= n^2+n+C\\
+TimeComplexity.BubbleSort(n) = BigO(n^2)
 $$
 
 ## Insertion Sort
@@ -129,22 +109,106 @@ static int[] insertionSort(int[] list) {
 #### Time complexity
 
 $$
-BigO = (n-1)a + B\\
-B = 3a(1) + 3a(2) + ... + 3a(n-2)\\
-B = 3a{n-2\over2}(1+n-2)\\
-B = {(3an - 6a)(n-1)\over2}\\
-B = {(3an^2 - 3an - 6an + 6a)\over2}\\
-B = {3an^2 - 9an + 6a\over2}\\
-BigO = (n-1)a + {3an^2 - 9an + 6a\over2}\\
-BigO = na - a + {3an^2 - 9an + 6a\over2}\\
-BigO = {3a\over2}n^2 - {9\over2a}n + 2a + na\\
-BigO = n^2
+TimeComplexity.InsertionSort = (n-1)c'+kc''\\
+k=1+2+3+...+(n-2)→{(n-2)\over2}(n-2+1)\\
+k={n^2-3n+2\over2}\\
+TimeComplexity.InsertionSort = nc'-c'+{n^2-3n+2\over2}c''\\
+= {c''\over2}n^2-{3c''\over2}n+c''+nc'-c'\\
+= {c''\over2}n^2-n({3c''\over2}+c')+c''-c'\\
+= n^2-n+C\\
+TimeComplexity.InsertionSort = BigO = n^2
 $$
-
 
 ## Merge sort
 
+```java
+static int[] mergeSort(int[] list) {
+    // split
+    if (list.length < 2) {
+        return list;
+    }
+    int mid = list.length / 2;
+    int[] left = new int[mid];
+    for (int i = 0; i < left.length; i++) {
+        left[i] = list[i];
+    }
+    int[] right = new int[list.length - mid];
+    for (int i = 0; i < right.length; i++) {
+        right[i] = list[i + mid];
+    }
+    left = mergeSort(left);
+    right = mergeSort(right);
+  
+    // merge
+    int currentLeftIndex = 0;
+    int currentRightIndex = 0;
+    for (int i = 0; i < list.length; i++) {
+        if (left.length == currentLeftIndex) {
+            list[i] = right[currentRightIndex];
+            currentRightIndex++;
+        } else if (right.length == currentRightIndex) {
+            list[i] = left[currentLeftIndex];
+            currentLeftIndex++;
+        } else if (left[currentLeftIndex] < right[currentRightIndex]) {
+            list[i] = left[currentLeftIndex];
+            currentLeftIndex++;
+        } else {
+            list[i] = right[currentRightIndex];
+            currentRightIndex++;
+        }
+    }
+    return list;
+}
+```
+
+### Time complexity
+
+$$
+TimeComplexity.MergeSort(n) = M(n)\\
+M(n)=
+\left\{
+\begin{array}{l}
+  2M({n\over2})+n(c')+c'',\ when\ n > 1\\ 
+  C,\ when\ n = 1
+\end{array}
+\right\}\\
+
+→ M(n) = 2(2M({n\over16})+{n(c')\over4}+{c''\over4}) = 4M({n\over4})+{n(c')\over4}+{c''\over4}\\
+→ M(n) = 8M({n\over8})+{n(c')\over8}+{c''\over8}\\
+→ M(n) = 16M({n\over16})+{n(c')\over16}+{c''\over16}\\
+→ M(n) = 2^kM({n\over2^k})+{n(c')\over2^k}+{c''\over2^k}\\
+{n\over2^k} = logn\\
+TimeComplexity.MergeSort(n) = BigO(n logn)\\
+$$
+
 ## Quick sort
+
+```java
+static void quickSortAux(int[] list, int start, int end) {
+    if (start < end) {
+        // partitioning
+        int pivot = list[new Random().nextInt(start, end)]; // random pivot help us to more close to BigO(nlogn) than BigO(n^2)
+        int pIndex = start;
+        for (int i = start; i < end - 1; i++) {
+            if (list[i] <= pivot) {
+                int beforePivot = list[i];
+                list[i] = list[pIndex];
+                list[pIndex] = beforePivot;
+                pIndex++;
+            }
+        }
+        list[end - 1] = list[pIndex];
+        list[pIndex] = pivot;
+        // split
+        quickSortAux(list, start, pIndex);
+        quickSortAux(list, pIndex + 1, end);
+    }
+}
+static int[] quickSort(int[] list) {
+    quickSortAux(list, 0, list.length);
+    return list;
+}
+```
 
 ## Heap sort
 
